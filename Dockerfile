@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
     git python3 python3-pip python3-venv wget ffmpeg libsm6 libxext6 && \
     rm -rf /var/lib/apt/lists/*
 
+# ADD THIS LINE RIGHT AFTER INSTALLING PACKAGES:
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Install ComfyUI
 WORKDIR /workspace
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
