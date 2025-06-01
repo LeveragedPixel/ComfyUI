@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:12.2.0-cudnn-devel-ubuntu22.04
 
 # System setup
 ENV DEBIAN_FRONTEND=noninteractive
@@ -9,7 +9,12 @@ RUN apt-get update && apt-get install -y \
 # Install ComfyUI
 WORKDIR /workspace
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
-RUN pip3 install --upgrade pip
+
+# Install PyTorch (GPU) and dependencies FIRST
+RUN pip3 install --upgrade pip && \
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Install the rest of the requirements
 RUN pip3 install -r requirements.txt
 
 # (Optional: Download/checkpoint models here if you want them baked in)
@@ -19,4 +24,3 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8188
 
 CMD ["python3", "main.py", "--listen", "0.0.0.0", "--port", "8188"]
-
